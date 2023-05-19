@@ -63,15 +63,74 @@ const followContributor = async (req, res) => {
             return res.status(404).json({ success: false, message: "User to follow not found" });
         }
 
-        // Update the followers array of the user being followed
-        userToFollow.followers.push(followerId);
+        // Check if the user is already following the other user
+        const isAlreadyFollowing = userToFollow.followers.includes(followerId);
+
+        if (isAlreadyFollowing) {
+            // If already following, unfollow
+            const index = userToFollow.followers.indexOf(followerId);
+            userToFollow.followers.splice(index, 1);
+        } else {
+            // If not following, follow
+            userToFollow.followers.push(followerId);
+        }
+
         await userToFollow.save();
 
-        res.status(200).json({ success: true, message: "User followed successfully" });
+        res.status(200).json({ success: true, message: isAlreadyFollowing ? "User unfollowed successfully" : "User followed successfully" });
     } catch (error) {
         console.error('Error following contributor:', error);
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
 
-module.exports = { getDocuments, uploadDocument, getTrendingContributors, followContributor };
+
+const incrementCounter = async (req, res) => {
+    try {
+        const { id } = req.query;
+        const document = await Document.findById(id);
+        if (!document) {
+            return res.status(404).json({ success: false, message: "Document not found" });
+        }
+
+        document.noOfClicks++;
+        await document.save();
+
+        res.status(200).json({ success: true, message: "Counter incremented successfully" });
+    } catch (error) {
+        console.error('Error incrementing counter:', error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+
+const getFollowerDocuments = async (req, res) => {
+    try {
+        const { userId } = req.query;
+
+        // Find all users where the followers array contains the userId
+        const users = await User.find({ followers: userId }).select('username');
+
+        // Extract usernames from the result
+        const usernames = users.map(user => user.username);
+
+        // Retrieve documents where 'createdBy' matches any of the extracted usernames
+        const documentsCreatedByFollowers = await Document.find({ createdBy: { $in: usernames } });
+
+        res.status(200).json(documentsCreatedByFollowers);
+    } catch (error) {
+        console.error('Error fetching follower documents:', error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+
+const getLatestDocuments = async (req, res) => {
+    try {
+        const documents = await Document.find().sort({ uploadDate: -1 }).limit(10);
+        res.status(200).json(documents);
+    } catch (error) {
+        console.error('Error fetching latest documents:', error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+
+module.exports = { getDocuments, uploadDocument, getTrendingContributors, followContributor, incrementCounter, getFollowerDocuments, getLatestDocuments };
