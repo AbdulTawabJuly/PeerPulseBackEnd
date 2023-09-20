@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
+
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const auth = require("./routes/auth");
@@ -10,6 +11,14 @@ const cors = require("cors");
 require("dotenv").config();
 
 app.use(cors()); // THis allows all origin
+const { Server } = require('socket.io');
+const mongoose = require('mongoose');
+const auth = require('./routes/auth');
+const rooms = require('./routes/rooms');
+const cors = require("cors");
+require('dotenv').config();
+
+app.use(cors());
 app.use(express.json());
 app.use("/api/auth", auth);
 
