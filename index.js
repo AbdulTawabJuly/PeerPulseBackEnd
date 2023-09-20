@@ -4,15 +4,18 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
-
+const auth = require('./routes/auth');
+const rooms = require('./routes/rooms');
 require('dotenv').config();
+
+
+app.use(express.json());
+app.use('/api/auth',auth);
+//app.use('/api/room',rooms);
+
 
 const io = new Server(server)
 const PORT = process.env.PORT || 8080;
-
-app.get("/", (req, res) => {
-  res.json({ status: "Success" });
-});
 
 io.on("connection", (socket)=> {
   console.log("user connected");

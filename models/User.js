@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     name: {
-        type:String,
-        required:true
+        type:String
     },
     email: {
         type:String,
@@ -17,7 +16,7 @@ const userSchema = new Schema({
         required:true
     },
     friends: [{type:mongoose.Schema.Types.ObjectId, ref:'User'}],
-    interest:[string]
+    interest:[String]
 })
 
 const User =  mongoose.model('user',userSchema);
