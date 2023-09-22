@@ -4,13 +4,13 @@ const bcrypt = require("bcryptjs");
 const register = async (req, res) => {
   const { name, email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ err: "fields are empty" });
+    return res.status(400).json({ error: "fields are empty" });
   }
   const salt = await bcrypt.genSalt(10);
   const secPas = await bcrypt.hash(password, salt);
   const user = await Users.findOne({ email: req.body.email });
   if (user) {
-    res.status(400).json({ err: "a user with this email already exists" });
+    res.status(400).json({ error: "a user with this email already exists" });
     return;
   }
   try {
@@ -31,21 +31,19 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    console.log({req_body:req.body});
   const email = req.body.email; 
   const password = req.body.password;
   if (!email || !password) {
-    console.log({email:email});
-    return res.status(400).json({ err: "email or password cannot be empty" });
+    return res.status(400).json({ error: "email or password cannot be empty" });
   }
   try {
     const user = await Users.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: "Email or Password is incorrect" });
+      return res.status(400).json({ error: "user does not exist" });
     }
     const passCompare = await bcrypt.compare(password, user.password);
     if (!passCompare) {
-      return res.status(400).json({ error: "Email or Password is incorrect" });
+      return res.status(400).json({ error: "Password is incorrect" });
     }
     const data = {
       id: user._id,
