@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
+const { DeleteExpiredRooms } = require("./controllers/roomController");
 // const bodyParser = require("body-parser");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
@@ -13,7 +14,7 @@ require("dotenv").config();
 app.use(cors()); // This allows all origin
 app.use(express.json());
 app.use("/api/auth", auth);
-//app.use('/api/room',rooms);
+app.use('/api/room',rooms);
 const io = new Server(server);
 const PORT = process.env.PORT || 8080;
 io.on("connection", (socket) => {
@@ -29,3 +30,7 @@ mongoose
   .catch((error) => {
     console.log("error occured connecting to mongoose");
   });
+
+setInterval(() => {
+    DeleteExpiredRooms();
+}, 1000*60);
