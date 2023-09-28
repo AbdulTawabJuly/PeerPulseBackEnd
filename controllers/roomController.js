@@ -26,7 +26,7 @@ const SearchRoom = async (req, res) => {
   if(Rooms)
   {
   try {
-    const searchResult = await Room.find( { name:{$regex:'.*'+Rooms+'.*'},isPublic:true} );
+    const searchResult = await Room.find( { name:{$regex:'.*'+Rooms+'.*'},isPublic:true} );  // this is LIKE command in SQL
     if (searchResult) {
       res.status(200).json(searchResult);
     } else {
@@ -55,7 +55,7 @@ else
 
 const DeleteExpiredRooms=async()=>{
   const currentTime = Date.now();
-console.log('Current time:', new Date(currentTime).toISOString());
+console.log('Current time:', new Date(currentTime).toISOString());  // toISOString() Function converts Date into String
 
 const oneHourAgo = new Date(currentTime - 1000 * 60 * 60);
 console.log('One hour ago:', oneHourAgo.toISOString());
