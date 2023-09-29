@@ -69,5 +69,23 @@ console.log('One hour ago:', oneHourAgo.toISOString());
     console.log(error);
    }
 }
+const SearchRoomByID=async(req,res)=>{
+  const roomID=String(req.query.RoomID.id);
+  roomID.String
+   try{
+    const response=await Room.findOne({_id:roomID}); 
+    if(response)
+    {
+      res.status(200).json(response);
+    }
+    else{
+      res.status(404).json({error:"No Room found."});
+    }
+   }
+   catch(err)
+   {
+      res.status(404).json({error:"Error Finding Room"}); 
+   }
+}
 
-module.exports = { createRoom,SearchRoom,DeleteExpiredRooms };
+module.exports = { createRoom,SearchRoom,DeleteExpiredRooms,SearchRoomByID };

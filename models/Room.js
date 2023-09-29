@@ -16,7 +16,8 @@ const roomSchema=new mongoose.Schema({
         type:String
     }],
     createdBy:String, 
-    isPublic:Boolean
+    isPublic:Boolean,
+    isPaid:Boolean
 
 });
 
