@@ -15,11 +15,23 @@ app.use(cors()); // This allows all origin
 app.use(express.json());
 app.use("/api/auth", auth);
 app.use('/api/room',rooms);
-const io = new Server(server);
-const PORT = process.env.PORT || 8080;
-io.on("connection", (socket) => {
-  console.log("user connected");
+const io = new Server(server,{
+  cors:{
+    origin:"*"
+  }
 });
+const PORT = process.env.PORT || 8080;
+
+
+io.on("connection", (socket) => {
+  console.log("user connected: ",socket.id);
+  socket.on('join-room',(room)=> {
+    socket.join(room);
+    console.log(`socket: ${socket.id} joined ${room}`);
+  })
+});
+
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
