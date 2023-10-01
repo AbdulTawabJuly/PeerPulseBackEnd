@@ -3,6 +3,7 @@
 const Room = require("../models/Room");
 const createRoom = async (req, res) => {
   const RoomName = req.body.Room;
+  console.log(RoomName);
   const user = req.body.currentUser;
   if (!RoomName) {
     res.status(404).json({ error: "You Crazy Son of a Gun! Enter a Name!" });
@@ -11,18 +12,20 @@ const createRoom = async (req, res) => {
     const TRoom = await Room.create({
       name: RoomName,
       createdBy: user,
-      members: [user],
+      members: [],
       startingTime:Date.now(),
       isPublic:req.body.isPublic
     });
-    res.status(200).json({Success:"Room Created Successfully!"});
+    console.log(TRoom);
+    res.status(200).json(TRoom);
   } catch (err) {
-    console.log(err);
+    console.log({error:"Error Creating Room"});
   }
 };
 
 const SearchRoom = async (req, res) => {
   const Rooms = req.query.RoomName;
+  console.log(Rooms);
   if(Rooms)
   {
   try {
@@ -63,11 +66,15 @@ const oneHourAgo = new Date(currentTime - 1000 * 60 * 60);
     console.log(error);
    }
 }
-const SearchRoomByID=async(req,res)=>{
+const JoinRoom=async(req,res)=>{
   const roomID=String(req.query.RoomID.id);
+  const user=req.query.UserID;
+  console.log(user);
   roomID.String
    try{
     const response=await Room.findOne({_id:roomID}); 
+    const response2=await Room.updateOne({_id:roomID},{$push:{members:user}});
+    const response3=await Room.updateOne({_id:roomID},{$inc:{noOfMembers:1}});
     if(response)
     {
       res.status(200).json(response);
@@ -78,8 +85,8 @@ const SearchRoomByID=async(req,res)=>{
    }
    catch(err)
    {
-      res.status(404).json({error:"Error Finding Room"}); 
+      res.status(500).json({error:"Error Finding Room"}); 
    }
 }
 
-module.exports = { createRoom,SearchRoom,DeleteExpiredRooms,SearchRoomByID };
+module.exports = { createRoom,SearchRoom,DeleteExpiredRooms,JoinRoom };

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const User=require('./User')
 const roomSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -13,7 +13,9 @@ const roomSchema=new mongoose.Schema({
         default:0
     },
     members:[{
-        type:String
+        
+        type:mongoose.Schema.Types.ObjectId,
+        ref:User
     }],
     createdBy:String, 
     isPublic:Boolean,

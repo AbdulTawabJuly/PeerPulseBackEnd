@@ -16,7 +16,7 @@ const userSchema = new Schema({
         required:true
     },
     friends: [{type:mongoose.Schema.Types.ObjectId, ref:'User'}],
-    interest:[String]
+    interest:[String],
 })
 
 const User =  mongoose.model('user',userSchema);
