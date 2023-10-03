@@ -67,17 +67,22 @@ const oneHourAgo = new Date(currentTime - 1000 * 60 * 60);
    }
 }
 const JoinRoom=async(req,res)=>{
-  const roomID=String(req.query.RoomID);
+   
+  const roomID=String(req.query.RoomID.id);
   const user=req.query.UserID;
-  console.log(user);
-  roomID.String
+
    try{
-    const response=await Room.findOne({_id:roomID}); 
-    const response2=await Room.updateOne({_id:roomID},{$push:{members:user}});
-    const response3=await Room.updateOne({_id:roomID},{$inc:{noOfMembers:1}});
-    if(response)
+    const response=await Room.findOne({members:user});
+    var response1,response2,response3;
+    if(!response)
     {
-      res.status(200).json(response);
+       response2=await Room.updateOne({_id:roomID},{$push:{members:user}});
+       response3=await Room.updateOne({_id:roomID},{$inc:{noOfMembers:1}});
+    }
+    response1=await Room.findOne({_id:roomID}).populate('members','_id email'); 
+    if(response1)
+    {
+      res.status(200).json(response1);
     }
     else{
       res.status(404).json({error:"No Room found."});
@@ -85,7 +90,7 @@ const JoinRoom=async(req,res)=>{
    }
    catch(err)
    {
-      console.log(err);
+    console.log(err);
       res.status(500).json({error:"Error Finding Room"}); 
    }
 }
@@ -93,10 +98,17 @@ const LeaveRoom=async(req,res)=>{
   const Roomid = String(req.query.RoomID.id);
   const user = String(req.query.currentUser);
   try{
-    await Room.updateOne({_id:Roomid},{$pull:{members:user}});
-    await Room.updateOne({_id:Roomid},{$inc:{noOfMembers:-1}});
-    await Room.findOne({_id:Roomid});
-    res.status(200).json({success:"All OK!"});
+    const response=await Room.findOne({members:user});
+    var response1,response2;
+    if(response)
+    {
+       response1=await Room.updateOne({_id:Roomid},{$pull:{members:user}});
+       response2=await Room.updateOne({_id:Roomid},{$inc:{noOfMembers:-1}});
+    }  
+    if(response1&&response2)
+    {
+      res.status(200).json({success:"All OK!"});
+    }
   }
   catch(error)
   {
