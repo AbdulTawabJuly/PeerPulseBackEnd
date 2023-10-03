@@ -67,7 +67,7 @@ const oneHourAgo = new Date(currentTime - 1000 * 60 * 60);
    }
 }
 const JoinRoom=async(req,res)=>{
-  const roomID=String(req.query.RoomID.id);
+  const roomID=String(req.query.RoomID);
   const user=req.query.UserID;
   console.log(user);
   roomID.String
@@ -85,8 +85,23 @@ const JoinRoom=async(req,res)=>{
    }
    catch(err)
    {
+      console.log(err);
       res.status(500).json({error:"Error Finding Room"}); 
    }
 }
-
-module.exports = { createRoom,SearchRoom,DeleteExpiredRooms,JoinRoom };
+const LeaveRoom=async(req,res)=>{
+  const Roomid = String(req.query.RoomID.id);
+  const user = String(req.query.currentUser);
+  try{
+    await Room.updateOne({_id:Roomid},{$pull:{members:user}});
+    await Room.updateOne({_id:Roomid},{$inc:{noOfMembers:-1}});
+    await Room.findOne({_id:Roomid});
+    res.status(200).json({success:"All OK!"});
+  }
+  catch(error)
+  {
+    console.log(error);
+    res.status(500).json({error:"Error Leaving Room"});
+  }
+}
+module.exports = { createRoom,SearchRoom,DeleteExpiredRooms,JoinRoom,LeaveRoom };
