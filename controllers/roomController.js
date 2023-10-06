@@ -3,7 +3,6 @@
 const Room = require("../models/Room");
 const createRoom = async (req, res) => {
   const RoomName = req.body.Room;
-  console.log(RoomName);
   const user = req.body.currentUser;
   if (!RoomName) {
     res.status(404).json({ error: "You Crazy Son of a Gun! Enter a Name!" });
@@ -16,7 +15,6 @@ const createRoom = async (req, res) => {
       startingTime:Date.now(),
       isPublic:req.body.isPublic
     });
-    console.log(TRoom);
     res.status(200).json(TRoom);
   } catch (err) {
     console.log({error:"Error Creating Room"});
@@ -116,4 +114,19 @@ const LeaveRoom=async(req,res)=>{
     res.status(500).json({error:"Error Leaving Room"});
   }
 }
-module.exports = { createRoom,SearchRoom,DeleteExpiredRooms,JoinRoom,LeaveRoom };
+
+const getRoom = async(req,res)=> {
+  const Roomid = String(req.query.roomID);
+  try {
+    const response = await Room.findOne({_id:Roomid}).populate('members','_id email');;
+    if(response) {
+      res.status(200).json(response);
+    }
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).json({error:'could not get room'});
+  }
+  return res.status(200);
+}
+module.exports = { createRoom,SearchRoom,DeleteExpiredRooms,JoinRoom,LeaveRoom, getRoom };
