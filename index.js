@@ -25,9 +25,21 @@ const PORT = process.env.PORT || 8080;
 
 io.on("connection", (socket) => {
   console.log("user connected: ",socket.id);
-  socket.on('join-room',(room)=> {
+
+  socket.on('join-room',(room,user)=> {
     socket.join(room);
+    console.log(`socket ${socket.id} joined room: ${room}`);
+    socket.to(room).emit('user-joined',user);
   })
+
+  socket.on('message-sent',(message,room)=> {
+    socket.to(room).emit('recieve-message',message);
+  })
+
+  socket.on('disconnect',()=> {
+    console.log(`user left: ${socket.id}`);
+  })
+
 });
 
 
