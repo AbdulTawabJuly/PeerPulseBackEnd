@@ -23,7 +23,6 @@ const createRoom = async (req, res) => {
 
 const SearchRoom = async (req, res) => {
   const Rooms = req.query.RoomName;
-  console.log(Rooms);
   if(Rooms)
   {
   try {
