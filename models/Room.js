@@ -20,7 +20,7 @@ const roomSchema=new mongoose.Schema({
     createdBy:String, 
     isPublic:Boolean,
     isPaid:Boolean,
-    price:Number,
+    price:{ type: Number },
 
 });
 

@@ -13,7 +13,9 @@ const createRoom = async (req, res) => {
       createdBy: user,
       members: [],
       startingTime:Date.now(),
-      isPublic:req.body.isPublic
+      isPublic:req.body.isPublic,
+      isPaid:req.body.isPaid,
+      price:req.body.price,
     });
     res.status(200).json(TRoom);
   } catch (err) {
