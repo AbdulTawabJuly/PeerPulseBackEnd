@@ -38,8 +38,6 @@ io.on("connection", (socket) => {
 });
 
 //Stripe Integration
-
-// This is your test secret API key.
 const stripe = require("stripe")(
   "sk_test_51NoQGmSDkACrq3oOCKvupOYTvJadCs6ErCYcArqHezd5zJcsJ3gRq97t6CVBLEbOi5TLSKpRomIDJ0muzRL9a5lq003WgZV7oc"
 );
@@ -52,9 +50,8 @@ app.post("/create-payment-intent", async (req, res) => {
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: calculateOrderAmount(totalAmount),
+    amount: (totalAmount*100)*83.24, //Current Indian Currency Rate
     currency: "inr",
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
     automatic_payment_methods: {
       enabled: true,
     },
