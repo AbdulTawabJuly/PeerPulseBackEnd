@@ -46,12 +46,13 @@ const calculateOrderAmount = (items) => {
 };
 
 app.post("/create-payment-intent", async (req, res) => {
-  //const { totalAmount } = req.body;
-  const totalAmount = 1400;
+  const  {totalAmount}  = req.body;
+  console.log("TA",totalAmount)
+  console.log("RB",req.body)
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: (totalAmount*100)*83.24, //Current Indian Currency Rate
+    amount: (totalAmount*100), //Current Indian Currency Rate
     currency: "inr",
     automatic_payment_methods: {
       enabled: true,
