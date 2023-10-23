@@ -46,13 +46,10 @@ const calculateOrderAmount = (items) => {
 };
 
 app.post("/create-payment-intent", async (req, res) => {
-  const  {totalAmount}  = req.body;
-  console.log("TA",totalAmount)
-  console.log("RB",req.body)
-
+  const { totalAmount } = req.body;
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: (totalAmount*100), //Current Indian Currency Rate
+    amount: totalAmount * 100, //Current Indian Currency Rate
     currency: "inr",
     automatic_payment_methods: {
       enabled: true,
@@ -64,6 +61,12 @@ app.post("/create-payment-intent", async (req, res) => {
   });
 });
 //----------------------------------------------------------------------------------------------------------------------------------------------------
+//Emailing Section
+
+
+
+
+//---------------------------------------------------------------------------------
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
