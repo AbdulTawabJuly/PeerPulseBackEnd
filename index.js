@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const auth = require("./routes/auth");
 const rooms = require("./routes/rooms");
 const cors = require("cors");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 // app.use(bodyParser.json());
 app.use(cors()); // This allows all origin
@@ -62,6 +63,30 @@ app.post("/create-payment-intent", async (req, res) => {
 });
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 //Emailing Section
+// let transporter = nodemailer.createTransport({
+//   host: "smtp.gmail.com",
+//   port: 587,
+//   secure: false, //true for 465 and false for other ports
+//   auth: {
+//     user: "tawabmasood456@gmail.com",
+//     pass: process.env.MAIL_PASSWORD,
+//   },
+// });
+
+// app.post("/mail", async (req, res) => {
+//   console.log("Req.Body ",req.body)
+//   const { to } = req.body;
+//   console.log("To ",to)
+//   const info = await transporter.sendMail({
+//     from: '"Fred Foo 👻" <tawabmasood456@gmail.com>', // sender address
+//     to: to, // list of receivers
+//     subject: "Hello ✔", // Subject line
+//     text: "Hello world?", // plain text body
+//     html: "<b>Hello world?</b>", // html body
+//   });
+//   console.log("Message sent: %s", info.messageId);
+//   res.json(info);
+// });
 
 
 

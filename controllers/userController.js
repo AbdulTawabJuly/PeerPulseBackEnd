@@ -65,20 +65,14 @@ const resetPasswordRequest = async (req, res) => {
   const subject = "Reset Password for Peer Pulse";
   const text = "Click Here to Reset Password";
   const html = `<p>Click <a href = "${resetPage}">Here</a> to Reset Password</p>`;
-  const to = req.body.email;
-  //console.log(req.body.email);
   if (req.body.email) {
     const response = await sendMail({
-      to: req.body.email,
+      to:req.body.email,
       subject,
       text,
       html,
     });
     console.log(response);
-    //Mail({ to: req.body.email, subject,html });
-    //await Users.findOne({ email: req.body.email });
-    //console.log(response);
-    //res.json(response);
     //let token = crypto.randomBytes(32).toString('hex');
   }
 };
