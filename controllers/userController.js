@@ -1,6 +1,7 @@
 const Users = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../Extras/common");
+const crypto = require("crypto");
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -61,20 +62,63 @@ const login = async (req, res) => {
   }
 };
 const resetPasswordRequest = async (req, res) => {
-  const resetPage = "http://localhost:3000/reset-password";
-  const subject = "Reset Password for Peer Pulse";
-  const text = "Click Here to Reset Password";
-  const html = `<p>Click <a href = "${resetPage}">Here</a> to Reset Password</p>`;
-  if (req.body.email) {
-    const response = await sendMail({
-      to:req.body.email,
-      subject,
-      text,
-      html,
-    });
-    console.log(response);
-    //let token = crypto.randomBytes(32).toString('hex');
+  // email bhejne se pehle aik token generate hoga or databse mai store kiya jaye ga or jab response aye ga wapis tou check kare ge ke wohi token hai ke ni take koi bhi localhost:300 pe jake khudi password change na karte phire
+  const email = req.body.email;
+  const user = await Users.findOne({ email: email });
+  if (user) {
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = token;
+    await user.save();
+
+    const resetPageLink =
+      "http://localhost:3000/reset-password?token=" + token + "&email=" + email;
+
+    const subject = "Reset Password for Peer Pulse";
+    const text = "Click Here to Reset Password";
+    const html = `<p>Click <a href = "${resetPageLink}">Here</a> to Reset Password</p>`;
+    // Sending email and a token in the mail body so we can verify that user has clicked on the right link
+    if (email) {
+      const response = await sendMail({
+        to: email,
+        subject,
+        text,
+        html,
+      });
+      res.json(response);
+    } else {
+      res.sendStatus(400);
+    }
+  } else {
+    res.sendStatus(400);
   }
 };
 
-module.exports = { register, login, resetPasswordRequest };
+const resetPassword = async (req, res) => {
+  const { email, password, token } = req.body;
+  const user = await Users.findOne({ email: email, resetPasswordToken: token });
+  if (user) {
+    const salt = await bcrypt.genSalt(10);
+    const newPassword = await bcrypt.hash(password, salt);
+    user.password = newPassword;
+    await user.save();
+
+    const subject = "Password Successfully Reset";
+    const text = "Password Successfully Reset for Email: " + email;
+    const html = `<p>Password Successfully Reset for Email: "${email}" </p>`;
+    if (email) {
+      const response = await sendMail({
+        to: email,
+        subject,
+        text,
+        html,
+      });
+      res.json(response);
+    } else {
+      res.sendStatus(400);
+    }
+  } else {
+    res.sendStatus(400);
+  }
+};
+
+module.exports = { register, login, resetPasswordRequest, resetPassword };
