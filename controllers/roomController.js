@@ -144,11 +144,9 @@ const sendInvoice = async (req, res) => {
   const { name, price } = req.body.RoomDetails;
   const email = req.body.user.user.email;
   const id = req.body.params.id;
-  // console.log(name,price,email,id);
   const subject = "Payment Invoice";
   const text =
     "Your Payment for Room: " + name + " of " + price + " has been recieved.";
-  // const html = `<p>Your Payment for Room: "${name}" of ${price} has been Recieved. Thank you </p>`;
   if (email) {
     const response = await sendMail({
       to: email,
