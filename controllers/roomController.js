@@ -161,7 +161,6 @@ const sendInvoice = async (req, res) => {
 
 const generateToken = async (req, res) => {
   const response = await tokenGenerator();
-  console.log(response);
   res.json(response);
 };
 
