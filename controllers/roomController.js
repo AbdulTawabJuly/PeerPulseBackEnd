@@ -1,5 +1,5 @@
 //room controller
-const { sendMail,invoiceTemplate } = require("../Extras/common");
+const { sendMail, invoiceTemplate,tokenGenerator } = require("../Extras/common");
 
 const Room = require("../models/Room");
 const createRoom = async (req, res) => {
@@ -152,12 +152,19 @@ const sendInvoice = async (req, res) => {
       to: email,
       subject,
       text,
-      html:invoiceTemplate(id,name,price),
+      html: invoiceTemplate(id, name, price),
     });
   } else {
     res.sendStatus(400);
   }
 };
+
+const generateToken = async (req, res) => {
+  const response = await tokenGenerator();
+  console.log(response);
+  res.json(response);
+};
+
 module.exports = {
   createRoom,
   SearchRoom,
@@ -166,4 +173,5 @@ module.exports = {
   LeaveRoom,
   getRoom,
   sendInvoice,
+  generateToken,
 };

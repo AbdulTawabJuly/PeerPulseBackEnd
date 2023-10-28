@@ -1,5 +1,11 @@
 const nodemailer = require("nodemailer");
 const smtpTransport = require("nodemailer-smtp-transport");
+const {
+  RtcTokenBuilder,
+  RtmTokenBuilder,
+  RtcRole,
+  RtmRole,
+} = require("agora-access-token");
 
 // const transporter = nodemailer.createTransport({
 //   host: "smtp.gmail.com",
@@ -35,7 +41,7 @@ exports.sendMail = async function ({ to, subject, text, html }) {
   return info;
 };
 
-exports.invoiceTemplate = function (PaymentID,RoomName,RoomPrice) {
+exports.invoiceTemplate = function (PaymentID, RoomName, RoomPrice) {
   return `<!DOCTYPE html>
   <html>
     <head>
@@ -273,5 +279,27 @@ exports.invoiceTemplate = function (PaymentID,RoomName,RoomPrice) {
       </table>
       <!-- end body -->
     </body>
-  </html>`
+  </html>`;
+};
+
+exports.tokenGenerator = async function () {
+  const appID = process.env.Agora_APP_ID;
+  const appCertificate = process.env.Agora_APP_CERTIFICATE;
+  const channelName = "main";
+  const uid = Math.floor(Math.random() * 100000);
+  const role = RtcRole.PUBLISHER;
+  const expirationTimeInSeconds = 36000;
+  const currentTimestamp = Math.floor(Date.now() / 1000);
+  const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
+
+  const token = RtcTokenBuilder.buildTokenWithUid(
+    appID,
+    appCertificate,
+    channelName,
+    uid,
+    role,
+    privilegeExpiredTs
+  );
+
+  return token;
 };
