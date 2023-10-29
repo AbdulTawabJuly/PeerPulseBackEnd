@@ -160,7 +160,8 @@ const sendInvoice = async (req, res) => {
 };
 
 const generateToken = async (req, res) => {
-  const response = await tokenGenerator();
+  const channel=req.query.channel;
+  const response = await tokenGenerator(channel);
   res.json(response);
 };
 
@@ -174,3 +175,4 @@ module.exports = {
   sendInvoice,
   generateToken,
 };
+

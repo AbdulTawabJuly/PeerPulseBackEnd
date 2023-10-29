@@ -282,10 +282,10 @@ exports.invoiceTemplate = function (PaymentID, RoomName, RoomPrice) {
   </html>`;
 };
 
-exports.tokenGenerator = async function () {
+exports.tokenGenerator = async function (channel) {
   const appID = process.env.Agora_APP_ID;
   const appCertificate = process.env.Agora_APP_CERTIFICATE;
-  const channelName = "main";
+  const channelName = channel;
   const uid = Math.floor(Math.random() * 100000);
   const role = RtcRole.PUBLISHER;
   const expirationTimeInSeconds = 36000;
