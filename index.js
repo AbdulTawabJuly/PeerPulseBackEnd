@@ -36,6 +36,15 @@ io.on("connection", (socket) => {
   socket.on("send-message", (message, room) => {
     socket.to(room).emit("recieve-message", message);
   });
+  socket.on("kick-user",(user,room)=>{
+    socket.to(room.id).emit("Kick-User",user);
+  });
+  socket.on("ban-user",(user,room)=>{
+    socket.to(room.id).emit("Ban-User",user);
+  });
+  socket.on("toggle-mic",(user,micstate,room)=>{
+    socket.to(room.id).emit("Toggle-Mic",user,micstate);
+  });
 });
 
 //Stripe Integration

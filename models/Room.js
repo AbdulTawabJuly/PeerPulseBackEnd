@@ -21,6 +21,9 @@ const roomSchema=new mongoose.Schema({
     isPublic:Boolean,
     isPaid:Boolean,
     price:{ type: Number },
+    bannedUsers:[{
+        type:String,
+    }]
 
 });
 

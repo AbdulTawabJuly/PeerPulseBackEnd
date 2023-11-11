@@ -6,6 +6,7 @@ const {
   SearchRoom,
   JoinRoom,
   LeaveRoom,
+  BanUser,
   getRoom,
   sendInvoice,
   generateToken
@@ -18,4 +19,5 @@ rooms.get("/leave", LeaveRoom);
 rooms.get("/getRoom", getRoom);
 rooms.post("/send-invoice", sendInvoice);
 rooms.get("/generate-token",generateToken)
+rooms.get("/banuser",BanUser)
 module.exports = rooms;
