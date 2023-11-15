@@ -8,6 +8,7 @@ const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const auth = require("./routes/auth");
 const rooms = require("./routes/rooms");
+const friends = require("./routes/friends")
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
@@ -16,6 +17,7 @@ app.use(cors()); // This allows all origin
 app.use(express.json());
 app.use("/api/auth", auth);
 app.use("/api/room", rooms);
+app.use("/api/friend",friends);
 const io = new Server(server, {
   cors: {
     origin: "*",

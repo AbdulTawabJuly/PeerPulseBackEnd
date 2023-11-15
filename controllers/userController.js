@@ -4,8 +4,8 @@ const { sendMail } = require("../Extras/common");
 const crypto = require("crypto");
 
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!email || !password) {
+  const { name, username, email, password } = req.body;
+  if (!email || !password || !username) {
     return res.status(400).json({ error: "fields are empty" });
   }
   const salt = await bcrypt.genSalt(10);
@@ -16,9 +16,10 @@ const register = async (req, res) => {
     return;
   }
   try {
-    const user = await Users.create({ name, email, password: secPas });
+    const user = await Users.create({ username, name, email, password: secPas });
     const data = {
       id: user._id,
+      username: user.username,
       name: user.name,
       email: user.email,
       friends: user.friends,
