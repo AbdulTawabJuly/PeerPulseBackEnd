@@ -54,6 +54,7 @@ const login = async (req, res) => {
       email: user.email,
       friends: user.friends,
       interest: user.interest,
+      username: user.username,
     };
     res.status(200).json({ user: data });
   } catch (err) {
