@@ -20,10 +20,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
   interest: [String],
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: Message }],
   resetPasswordToken: { type: String, default: "" },
+  
 });
 
 const User = mongoose.model("user", userSchema);
