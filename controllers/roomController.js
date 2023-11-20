@@ -94,6 +94,7 @@ const JoinRoom = async (req, res) => {
     }
     if (response1&&!checkBan) {
       res.status(200).json(response1);
+      
     } else {
       res.status(404).json({ error: "No Room found." });
     }
@@ -113,13 +114,66 @@ const BanUser=async(req,res)=>{
          response=await Room.findOneAndUpdate({_id:roomID},{$push:{bannedUsers:userID}},{new:true});
        }
        if(response){
-        res.status(200).json(response);
+        res.status(200).json({message:"User has been banned"});
        }
   }
   catch(error){
     res.status(500).json({ error: "Error Banning User" });
   }
+}
+const MakeModerator=async(req,res)=>{
+  const roomID=String(req.query.RoomID.id);
+  const userID = String(req.query.currentUser);
+  try{
+    const response1=await Room.findOne({_id:roomID,members:{$in:[userID]}});
+    const response2=await Room.findOne({_id:roomID,moderators:{$in:[userID]}});
+    var response;
+    
+    if(!response2)//if not already a mod
+    {
+    if(response1)//if in member list of current room
+    {
+      response=await Room.findOneAndUpdate({_id:roomID},{$push:{moderators:userID}},{new:true});
+    }
+    if(response){
+       res.status(200).json({message:"User has been made a moderator."});
+    }
+  }
+  else{
+    res.status(404).json({error:"User is already a moderator"});
+  }
+  }
+  catch(error){
+    res.status(500).json({ error: "Error making moderator" });
 
+  }
+}
+const RemoveModerator=async(req,res)=>{
+  const roomID=String(req.query.RoomID.id);
+  const userID = String(req.query.currentUser);
+  try{
+    const response1=await Room.findOne({_id:roomID,members:{$in:[userID]}});
+    const response2=await Room.findOne({_id:roomID,moderators:{$in:[userID]}});
+    var response;
+    
+    if(response2)//if already a mod
+    {
+    if(response1)//if in member list of current room
+    {
+      response=await Room.findOneAndUpdate({_id:roomID},{$pull:{moderators:userID}},{new:true});
+    }
+    if(response){
+       res.status(200).json({message:"User has been made a moderator."});
+    }
+  }
+  else{
+    res.status(404).json({error:"User is already a moderator"});
+  }
+  }
+  catch(error){
+    res.status(500).json({ error: "Error making moderator" });
+
+  }
 }
 const LeaveRoom = async (req, res) => {
   const Roomid = String(req.query.RoomID.id);
@@ -198,5 +252,7 @@ module.exports = {
   getRoom,
   sendInvoice,
   generateToken,
+  MakeModerator,
+  RemoveModerator
 };
 

@@ -47,6 +47,13 @@ io.on("connection", (socket) => {
   socket.on("toggle-mic",(user,micstate,room)=>{
     socket.to(room.id).emit("Toggle-Mic",user,micstate);
   });
+  socket.on("make-moderator",(user,userID,room)=>{
+    socket.to(room.id).emit("Make-Moderator",user,userID);
+  });
+  socket.on("remove-moderator",(user,userID,room)=>{
+    socket.to(room.id).emit("Remove-Moderator",user,userID);
+  });
+  
 });
 
 //Stripe Integration
