@@ -2,6 +2,7 @@
 const { sendMail, invoiceTemplate,tokenGenerator } = require("../Extras/common");
 
 const Room = require("../models/Room");
+const User = require("../models/User");
 const createRoom = async (req, res) => {
   const RoomName = req.body.Room;
   const user = req.body.currentUser;
@@ -9,6 +10,7 @@ const createRoom = async (req, res) => {
     res.status(404).json({ error: "You Crazy Son of a Gun! Enter a Name!" });
   }
   try {
+   
     const TRoom = await Room.create({
       name: RoomName,
       createdBy: user,
@@ -18,7 +20,9 @@ const createRoom = async (req, res) => {
       isPaid: req.body.isPaid,
       price: req.body.price,
     });
-    res.status(200).json(TRoom);
+    if(TRoom){
+      res.status(200).json(TRoom);
+    }
   } catch (err) {
     console.log({ error: "Error Creating Room" });
   }
@@ -74,6 +78,9 @@ const JoinRoom = async (req, res) => {
   try {
     const response = await Room.findOne({ members: user });
     const checkBan=await Room.findOne({_id:roomID,bannedUsers:user});
+    const userJoining = await User.findOne({_id:user});
+    const token = await tokenGenerator(roomID,userJoining.email);
+    const userAgoraTokenSaved=await User.findOneAndUpdate({_id:user},{AgoraToken:token},{new:true});
     var response1, response2, response3;
     if(!checkBan){
     if (!response) {
@@ -89,10 +96,10 @@ const JoinRoom = async (req, res) => {
 
     response1 = await Room.findOne({ _id: roomID }).populate(
       "members",
-      "_id email"
+      "_id email AgoraToken"
     );
     }
-    if (response1&&!checkBan) {
+    if (response1&&!checkBan&&userAgoraTokenSaved) {
       res.status(200).json(response1);
       
     } else {

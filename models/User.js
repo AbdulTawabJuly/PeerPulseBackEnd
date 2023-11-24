@@ -24,7 +24,7 @@ const userSchema = new Schema({
   interest: [String],
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: Message }],
   resetPasswordToken: { type: String, default: "" },
-  
+  AgoraToken:{type:String}
 });
 
 const User = mongoose.model("user", userSchema);
