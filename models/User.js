@@ -20,8 +20,28 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  age:{
+    type:Number,
+  },
+  Gender:{
+    type:String,
+  },
+  bsField:{
+    type:String,
+  },
+  bsUni:{
+    type:String,
+  },
+  msField:{
+    type:String,
+  },
+  msUni:{
+    type:String,
+  },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
-  interest: [String],
+  interest: {
+    type:[String],
+  },
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: Message }],
   resetPasswordToken: { type: String, default: "" },
   AgoraToken:{type:String}

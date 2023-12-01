@@ -4,8 +4,9 @@ const { sendMail } = require("../Extras/common");
 const crypto = require("crypto");
 
 const register = async (req, res) => {
-  const { name, username, email, password } = req.body;
-  if (!email || !password || !username) {
+  const { name, username, email, password,age,gender,bsField,msField,bsUni,msUni,interest} = req.body;
+  
+  if (!name||!email || !password || !username||!age||!gender||!interest) {
     return res.status(400).json({ error: "fields are empty" });
   }
   const salt = await bcrypt.genSalt(10);
@@ -16,7 +17,7 @@ const register = async (req, res) => {
     return;
   }
   try {
-    const user = await Users.create({ username, name, email, password: secPas });
+    const user = await Users.create({ username, name, email, password: secPas,age,gender,bsField,msField,bsUni,msUni,interest});
     const data = {
       id: user._id,
       username: user.username,
@@ -27,6 +28,7 @@ const register = async (req, res) => {
     };
     res.status(200).json({ user: data });
   } catch (err) {
+    console.log(err.message);
     res
       .status(500)
       .json({ error: "An error occured while registering", msg: err.message });
