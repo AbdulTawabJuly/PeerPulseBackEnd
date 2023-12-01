@@ -2,11 +2,12 @@ const Users = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../Extras/common");
 const crypto = require("crypto");
+const Binary=require('mongodb');
 
 const register = async (req, res) => {
-  const { name, username, email, password,age,gender,bsField,msField,bsUni,msUni,interest} = req.body;
+  const { name, username, email, password,age,gender,bsField,msField,bsUni,msUni,interest,image} = req.body;
   
-  if (!name||!email || !password || !username||!age||!gender||!interest) {
+  if (!name||!email || !password || !username||!age||!gender||!interest||!image) {
     return res.status(400).json({ error: "fields are empty" });
   }
   const salt = await bcrypt.genSalt(10);
@@ -17,7 +18,7 @@ const register = async (req, res) => {
     return;
   }
   try {
-    const user = await Users.create({ username, name, email, password: secPas,age,gender,bsField,msField,bsUni,msUni,interest});
+    const user = await Users.create({ username, name, email, password: secPas,age,gender,bsField,msField,bsUni,msUni,interest,image});
     const data = {
       id: user._id,
       username: user.username,

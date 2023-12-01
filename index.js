@@ -14,7 +14,7 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 // app.use(bodyParser.json());
 app.use(cors()); // This allows all origin
-app.use(express.json());
+app.use(express.json({limit:'10mb'}));
 app.use("/api/auth", auth);
 app.use("/api/room", rooms);
 app.use("/api/friend",friends);
