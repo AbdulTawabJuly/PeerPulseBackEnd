@@ -135,11 +135,66 @@ const declineReq = async (req, res) => {
 }
 
 const removeFriend = async (req, res) => {
+  const userUsername = req.query.user_username;
+  const friendUsername = req.query.friend_username;
+
+  try {
+    const user = await Users.findOne({ username: userUsername });
+    const friend = await Users.findOne({ username: friendUsername });
+    if (!user || !friend) {
+      return res.status(404).json({ error: 'User or friend not found' });
+    }
+
+    const userIndex = user.friends.findIndex(friendId => friendId.toString() === friend._id.toString());
+    const friendIndex = friend.friends.findIndex(userId => userId.toString() === user._id.toString());
+
+    if (userIndex === -1 || friendIndex === -1) {
+      return res.status(400).json({ error: 'Friend not found in the friend list' });
+    }
+
+    user.friends.splice(userIndex, 1);
+    await user.save();
+
+    friend.friends.splice(friendIndex, 1);
+    await friend.save();
+    console.log("friend removed successfully")
+
+    return res.json({ message: 'Friend removed successfully' });
+
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 
 }
-
 const blockFriend = async (req, res) => {
+  const userUsername = req.query.user_username;
+  const friendUsername = req.query.friend_username;
 
+  try {
+    const user = await Users.findOne({ username: userUsername });
+    const friend = await Users.findOne({ username: friendUsername });
+
+    if (!user || !friend) {
+      return res.status(404).json({ error: 'User or friend not found' });
+    }
+
+    // Check if the friend is already blocked
+    if (user.blockedFriends && user.blockedFriends.includes(friend._id.toString())) {
+      return res.status(400).json({ error: 'Friend is already blocked' });
+    }
+
+    // Add friend to the blockedFriends list
+    user.blockedFriends = user.blockedFriends || [];
+    user.blockedFriends.push(friend._id);
+    await user.save();
+
+    return res.json({ message: 'Friend blocked successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
 
 const getFriends = async(req,res) => {
@@ -160,4 +215,34 @@ const getFriends = async(req,res) => {
 
 }
 
-module.exports = { sendFriendReq, addFriend, declineReq, removeFriend, blockFriend, getNotifications, getFriends };
+const unBlock = async(req,res)=> {
+  const userUsername = req.query.user_username;
+  const friendUsername = req.query.friend_username;
+
+  try {
+    const user = await Users.findOne({ username: userUsername });
+    const friend = await Users.findOne({ username: friendUsername });
+
+    if (!user || !friend) {
+      return res.status(404).json({ error: 'User or friend not found' });
+    }
+
+    // Check if the friend is in the blockedFriends list
+    const friendIndex = user.blockedFriends.findIndex(blockedFriendId => blockedFriendId.toString() === friend._id.toString());
+
+    if (friendIndex === -1) {
+      return res.status(400).json({ error: 'Friend is not blocked' });
+    }
+
+    // Remove friend from the blockedFriends list
+    user.blockedFriends.splice(friendIndex, 1);
+    await user.save();
+
+    return res.json({ message: 'Friend unblocked successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+module.exports = { sendFriendReq, addFriend, declineReq, removeFriend, blockFriend, getNotifications, getFriends, unBlock };
