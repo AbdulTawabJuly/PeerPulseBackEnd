@@ -26,6 +26,13 @@ const register = async (req, res) => {
       email: user.email,
       friends: user.friends,
       interest: user.interest,
+      image:user.image,
+      age:user.age,
+      gender:user.gender,
+      bsField:user.bsField,
+      bsUni:user.bsUni,
+      msField:user.msField,
+      msUni:user.msUni,
     };
     res.status(200).json({ user: data });
   } catch (err) {
@@ -53,11 +60,18 @@ const login = async (req, res) => {
     }
     const data = {
       id: user._id,
+      username: user.username,
       name: user.name,
       email: user.email,
       friends: user.friends,
       interest: user.interest,
-      username: user.username,
+      image:user.image,
+      age:user.age,
+      gender:user.gender,
+      bsField:user.bsField,
+      bsUni:user.bsUni,
+      msField:user.msField,
+      msUni:user.msUni,
     };
     res.status(200).json({ user: data });
   } catch (err) {
@@ -126,4 +140,57 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, resetPasswordRequest, resetPassword };
+const GetUser=async(req,res)=>{
+  const userID=req.query.id;
+  try{
+  const user=await Users.findOne({_id:userID});
+  const data = {
+    id: user._id,
+    username: user.username,
+    name: user.name,
+    email: user.email,
+    friends: user.friends,
+    interest: user.interest,
+    image:user.image,
+    age:user.age,
+    gender:user.gender,
+    bsField:user.bsField,
+    bsUni:user.bsUni,
+    msField:user.msField,
+    msUni:user.msUni,
+  };
+  if(user){
+    res.status(200).json(data);
+  }else{
+    res.status(404).json({error:"User not found"});
+  }
+}catch(error){
+  res.status(500).json({error:"Error fetching user"});
+}
+
+
+}
+const UpdateUser=async(req,res)=>{
+  const data=req.query.data;
+  const emailnotAvailable=Users.findOne({_id:{$ne:data.id},email:data.email});
+  const usernamenotAvailable=Users.findOne({_id:{$ne:data.id},username:data.username});
+  if(emailnotAvailable)
+  {
+    res.status(404).json({error:"A user with this email already exists"});
+  }else if(usernamenotAvailable){
+    res.status(404).json({error:"A user with this username already exists"});
+  }
+  else{
+    try{
+          const response=Users.updateOne({_id:data.id},{$set:{name:data.name,age:data.age, email:data.email,username:data.username,bsField:data.bsField,bsUni:data.bsUni,msField:data.msField,msUni:data.msUni,interest:data.interest}});
+          if(response){
+            res.status(200).json(data);
+          }
+    }
+    catch(error){
+      res.status(500).json({error:"error updating user"});
+    }
+  }
+}
+
+module.exports = { register, login, resetPasswordRequest, resetPassword,GetUser,UpdateUser };

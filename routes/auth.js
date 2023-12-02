@@ -6,13 +6,18 @@ const {
   login,
   resetPasswordRequest,
   resetPassword,
+  GetUser,
+  UpdateUser
 } = require("../controllers/userController");
+
 
 auth
   .post("/register", register)
   .post("/login", login)
   .post("/reset-password-request", resetPasswordRequest)
-  .post("/reset-password", resetPassword);
+  .post("/reset-password", resetPassword)
+  .get("/getuser",GetUser)
+  .get("/update-user",UpdateUser);
 // auth.get("logout",logout);
 
 module.exports = auth;
