@@ -172,8 +172,8 @@ const GetUser=async(req,res)=>{
 }
 const UpdateUser=async(req,res)=>{
   const data=req.query.data;
-  const emailnotAvailable=Users.findOne({_id:{$ne:data.id},email:data.email});
-  const usernamenotAvailable=Users.findOne({_id:{$ne:data.id},username:data.username});
+  const emailnotAvailable=await Users.findOne({_id:{$ne:data.id},email:data.email}).lean();
+  const usernamenotAvailable=await Users.findOne({_id:{$ne:data.id},username:data.username});
   if(emailnotAvailable)
   {
     res.status(404).json({error:"A user with this email already exists"});
@@ -182,7 +182,7 @@ const UpdateUser=async(req,res)=>{
   }
   else{
     try{
-          const response=Users.updateOne({_id:data.id},{$set:{name:data.name,age:data.age, email:data.email,username:data.username,bsField:data.bsField,bsUni:data.bsUni,msField:data.msField,msUni:data.msUni,interest:data.interest}});
+          const response=await Users.findOneAndUpdate({_id:data.id},{$set:{name:data.name,age:data.age, email:data.email,username:data.username,bsField:data.bsField,bsUni:data.bsUni,msField:data.msField,msUni:data.msUni,interest:data.interest}});
           if(response){
             res.status(200).json(data);
           }

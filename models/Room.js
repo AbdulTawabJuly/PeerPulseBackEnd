@@ -17,7 +17,11 @@ const roomSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:User
     }],
-    createdBy:String, 
+    createdBy:{
+        
+        type:mongoose.Schema.Types.ObjectId,
+        ref:User
+    }, 
     isPublic:Boolean,
     isPaid:Boolean,
     price:{ type: Number },

@@ -11,6 +11,7 @@ const {
   sendInvoice,
   MakeModerator,
   RemoveModerator,
+  GetRoomsOfUser,
 } = require("../controllers/roomController");
 
 rooms.post("/create", createRoom);
@@ -22,5 +23,6 @@ rooms.post("/send-invoice", sendInvoice);
 rooms.get("/banuser",BanUser);
 rooms.get("/makemoderator",MakeModerator);
 rooms.get("/removemoderator",RemoveModerator);
+rooms.get("/get-rooms",GetRoomsOfUser);
 
 module.exports = rooms;
