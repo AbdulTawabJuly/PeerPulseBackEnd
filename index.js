@@ -13,11 +13,44 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 // app.use(bodyParser.json());
+const multer = require('multer');
+const path = require('path');
+
+// ...
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads'); // Specify the directory where you want to store the files
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 app.use(cors()); // This allows all origin
+app.post('/upload', upload.single('file'), (req, res) => {
+  const file = req.file;
+  console.log("file uploaded to server");
+  console.log(req.file);
+  res.json({ success: true, message: 'File uploaded successfully.', identifier:file.originalname });
+});
+
 app.use(express.json({limit:'10mb'}));
 app.use("/api/auth", auth);
 app.use("/api/room", rooms);
 app.use("/api/friend",friends);
+app.use('/api/files', express.static(path.join(__dirname, 'uploads')));
+app.get('/api/files/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, 'uploads', filename); // Adjust the path accordingly
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error('Error downloading file:', err);
+      res.status(500).json({ success: false, message: 'Internal Server Error.' });
+    }
+  });
+});
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -33,6 +66,7 @@ io.on("connection", (socket) => {
 
   socket.on("leave-room", (user, room) => {
     socket.to(room).emit("user-left", user);
+    console.log("user left in backednd")
   });
 
   socket.on("send-message", (message, room) => {
