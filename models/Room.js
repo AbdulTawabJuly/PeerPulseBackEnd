@@ -31,6 +31,9 @@ const roomSchema=new mongoose.Schema({
     moderators:[{
       type:String,
     }],
+    tags:[{
+        type:String,
+    }]
 });
 
 const Room = mongoose.model('room',roomSchema);

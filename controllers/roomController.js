@@ -19,6 +19,7 @@ const createRoom = async (req, res) => {
       isPublic: req.body.isPublic,
       isPaid: req.body.isPaid,
       price: req.body.price,
+      tags:req.body.tags,
     });
     if(TRoom){
       res.status(200).json(TRoom);
@@ -270,6 +271,26 @@ const generateToken = async (req, res) => {
   res.json(response);
 };
 
+const SearchSuggestedRooms=async(req,res)=>{
+  const user=req.query.user;
+  try{
+    const foundUser=await User.findOne({_id:user});
+    if(foundUser){
+      const suggestedRooms=await Room.find({tags:{$in:foundUser.interest}}).populate(
+        "createdBy",
+        "_id image"
+      );
+      if(suggestedRooms){
+        res.status(200).json(suggestedRooms);
+      }else{
+        res.status(404).json({error:"No suggestions"});
+      }
+    }
+  }catch(error){
+        res.status(500).json({error:"Error fetching suggested rooms"});
+  }
+}
+
 module.exports = {
   createRoom,
   SearchRoom,
@@ -282,6 +303,7 @@ module.exports = {
   generateToken,
   MakeModerator,
   RemoveModerator,
-  GetRoomsOfUser
+  GetRoomsOfUser,
+  SearchSuggestedRooms
 };
 

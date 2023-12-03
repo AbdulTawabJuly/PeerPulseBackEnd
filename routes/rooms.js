@@ -12,6 +12,7 @@ const {
   MakeModerator,
   RemoveModerator,
   GetRoomsOfUser,
+  SearchSuggestedRooms,
 } = require("../controllers/roomController");
 
 rooms.post("/create", createRoom);
@@ -24,5 +25,6 @@ rooms.get("/banuser",BanUser);
 rooms.get("/makemoderator",MakeModerator);
 rooms.get("/removemoderator",RemoveModerator);
 rooms.get("/get-rooms",GetRoomsOfUser);
+rooms.get("/search-sugg-rooms",SearchSuggestedRooms);
 
 module.exports = rooms;
