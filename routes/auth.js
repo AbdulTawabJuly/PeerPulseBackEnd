@@ -17,7 +17,7 @@ auth
   .post("/reset-password-request", resetPasswordRequest)
   .post("/reset-password", resetPassword)
   .get("/getuser",GetUser)
-  .get("/update-user",UpdateUser);
+  .post("/update-user",UpdateUser);
 // auth.get("logout",logout);
 
 module.exports = auth;

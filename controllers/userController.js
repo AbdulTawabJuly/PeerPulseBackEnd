@@ -171,7 +171,7 @@ const GetUser=async(req,res)=>{
 
 }
 const UpdateUser=async(req,res)=>{
-  const data=req.query.data;
+  const data=req.body.data;
   const emailnotAvailable=await Users.findOne({_id:{$ne:data.id},email:data.email}).lean();
   const usernamenotAvailable=await Users.findOne({_id:{$ne:data.id},username:data.username});
   if(emailnotAvailable)
@@ -182,7 +182,7 @@ const UpdateUser=async(req,res)=>{
   }
   else{
     try{
-          const response=await Users.findOneAndUpdate({_id:data.id},{$set:{name:data.name,age:data.age, email:data.email,username:data.username,bsField:data.bsField,bsUni:data.bsUni,msField:data.msField,msUni:data.msUni,interest:data.interest}});
+          const response=await Users.findOneAndUpdate({_id:data.id},{$set:{name:data.name,age:data.age, email:data.email,username:data.username,bsField:data.bsField,bsUni:data.bsUni,msField:data.msField,msUni:data.msUni,interest:data.interest,image:data.image}});
           if(response){
             res.status(200).json(data);
           }
