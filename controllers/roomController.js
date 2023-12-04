@@ -193,7 +193,7 @@ const LeaveRoom = async (req, res) => {
   const Roomid = String(req.query.RoomID.id);
   const user = String(req.query.currentUser);
   try {
-    const response = await Room.findOne({ members: user });
+    const response = await Room.findOne({_id:Roomid,members:{$in:[user]}});
     var response1, response2;
     if (response) {
       response1 = await Room.updateOne(
@@ -276,7 +276,7 @@ const SearchSuggestedRooms=async(req,res)=>{
   try{
     const foundUser=await User.findOne({_id:user});
     if(foundUser){
-      const suggestedRooms=await Room.find({tags:{$in:foundUser.interest}}).populate(
+      const suggestedRooms=await Room.find({tags:{$in:foundUser.interest},isPublic:true}).populate(
         "createdBy",
         "_id image"
       );
