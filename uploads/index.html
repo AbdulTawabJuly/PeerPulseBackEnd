@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>CETTLE Homepage</title>
+    <script>
+window.onload = function() {
+  Particles.init({
+    selector: '.background',
+    sizeVariations: 10,
+    color: [
+      'rgb(255,255,255)', 'rgb(255,99,71)', 'rgb(63,112,77)'
+    ]
+  });
+};
+
+    </script>
+  <style>
+.background {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+body
+{
+  background-color: #002D62;
+  color: white;
+  height: 100%;
+}
+
+</style>
+  </head>
+  <body>
+    <div class="container-fluid" style="margin-top: 25%;vertical-align: middle;z-index: 1000;">
+      <div class="text-center">
+      <h1 class="text-center align-middle">Cettle - An intelligent solution for timetable generation</h1>
+     <h3 class="text-center align-middle"> Create clashless timetables quickly!</h3>
+     <a class="btn btn-success" href="timetable.html">Goto Cettle</a>
+    <a class="btn btn-success" href="credits.html">Credits</a>
+    </div>
+    </div>
+<canvas class="background"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.2/particles.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
+
