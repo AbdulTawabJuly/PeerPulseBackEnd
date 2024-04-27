@@ -87,6 +87,17 @@ io.on("connection", (socket) => {
   socket.on("remove-moderator",(user,userID,room)=>{
     socket.to(room.id).emit("Remove-Moderator",user,userID);
   });
+  socket.on("drawing", (data, room) => {
+    // data could include things like coordinates, color, width, etc.
+    socket.to(room.roomID).emit("drawing", data);
+  });
+  socket.on("startDrawing", (data,room) => {
+    socket.to(room.roomID).emit("startDrawing", data);
+  });
+
+  socket.on("stopDrawing", (room) => {
+    socket.to(room).emit("stopDrawing");
+  });
   
 });
 
