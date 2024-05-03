@@ -8,17 +8,21 @@ const getMembers = async (req, res) => {
     }
 
     try {
-        // Fetch the room by ID and populate the whiteboardMembers array
+        // Fetch the room by ID and populate the whiteboardMembers array with the name field
         const room = await Room.findById(roomId).populate('whiteboardMembers', 'name');
         if (!room) {
             return res.status(404).json({ error: 'Room not found' });
         }
 
-        // Extract only the names of the whiteboard members
-        const whiteboardMemberNames = room.whiteboardMembers.map(member => member.name);
+        // Extract the initials of the names of the whiteboard members
+        const whiteboardMemberInitials = room.whiteboardMembers.map(member => {
+            const names = member.name.split(' ');
+            let initials = names.map(name => name[0].toUpperCase()).join('');
+            return initials;
+        });
 
-        // Return the names of the whiteboard members
-        return res.status(200).json(whiteboardMemberNames);
+        // Return the initials of the whiteboard members
+        return res.status(200).json(whiteboardMemberInitials);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
