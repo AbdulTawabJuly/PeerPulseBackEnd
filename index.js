@@ -100,6 +100,14 @@ io.on("connection", (socket) => {
   socket.on("stopDrawing", (room) => {
     socket.to(room).emit("stopDrawing");
   });
+
+  socket.on("joined-whiteboard", (room) => {
+    socket.to(room.roomID).emit("joined-whiteboard");
+  });
+
+  socket.on("left-whiteboard", (room) => {
+    socket.to(room.roomID).emit("left-whiteboard");
+  });
   
 });
 

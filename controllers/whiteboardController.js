@@ -1,4 +1,5 @@
 const Room = require('../models/Room');
+const User = require('../models/User');
 
 const getMembers = async (req, res) => {
     const roomId = req.query.roomId;
@@ -14,15 +15,15 @@ const getMembers = async (req, res) => {
             return res.status(404).json({ error: 'Room not found' });
         }
 
-        // Extract the initials of the names of the whiteboard members
-        const whiteboardMemberInitials = room.whiteboardMembers.map(member => {
+        // Extract the initials and userId of the names of the whiteboard members
+        const whiteboardMembersInfo = room.whiteboardMembers.map(member => {
             const names = member.name.split(' ');
-            let initials = names.map(name => name[0].toUpperCase()).join('');
-            return initials;
+            const initials = names.map(name => name[0].toUpperCase()).join('');
+            return { userId: member._id, initials };
         });
 
-        // Return the initials of the whiteboard members
-        return res.status(200).json(whiteboardMemberInitials);
+        // Return the array of objects containing userId and initials
+        return res.status(200).json(whiteboardMembersInfo);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -31,7 +32,6 @@ const getMembers = async (req, res) => {
 
 const addMember = async (req, res) => {
     const { roomId, memberId } = req.body;
-
     if (!roomId || !memberId) {
         return res.status(400).json({ error: 'Room ID and Member ID must be provided' });
     }
@@ -51,7 +51,18 @@ const addMember = async (req, res) => {
         room.whiteboardMembers.push(memberId);
         await room.save();
 
-        res.status(200).json({ message: 'Member added to whiteboard successfully' });
+        // Get the added member's details from the User model
+        const addedMember = await User.findById(memberId, 'name');
+        if (!addedMember) {
+            return res.status(404).json({ error: 'Member not found' });
+        }
+
+        // Calculate the initials
+        const names = addedMember.name.split(' ');
+        const initials = names.map(name => name[0].toUpperCase()).join('');
+        
+        // Return an object containing memberId and initials
+        return res.status(200).json({ userId: memberId, initials });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -59,11 +70,11 @@ const addMember = async (req, res) => {
 }
 
 const removeMember = async (req, res) => {
-    const { roomId, memberId } = req.body;
-
-    if (!roomId || !memberId) {
-        return res.status(400).json({ error: 'Room ID and Member ID must be provided' });
-    }
+    const roomId = req.query.roomId;
+    const memberId = req.query.memberId;
+    // if (!roomId || !memberId) {
+    //     return res.status(400).json({ error: 'Room ID and Member ID must be provided' });
+    // }
 
     try {
         const room = await Room.findById(roomId);
@@ -75,7 +86,8 @@ const removeMember = async (req, res) => {
         room.whiteboardMembers = room.whiteboardMembers.filter(id => id.toString() !== memberId);
         await room.save();
 
-        res.status(200).json({ message: 'Member removed from whiteboard successfully' });
+        // Return an object containing memberId and a success message
+        return res.status(200).json({ userId: memberId, message: 'Member removed from whiteboard successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
