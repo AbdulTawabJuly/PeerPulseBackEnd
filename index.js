@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const auth = require("./routes/auth");
 const rooms = require("./routes/rooms");
 const friends = require("./routes/friends")
+const whiteboard = require("./routes/whiteboard");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
@@ -40,6 +41,7 @@ app.use(express.json({limit:'10mb'}));
 app.use("/api/auth", auth);
 app.use("/api/room", rooms);
 app.use("/api/friend",friends);
+app.use("/api/whiteboard", whiteboard);
 app.use('/api/files', express.static(path.join(__dirname, 'uploads')));
 app.get('/api/files/:filename', (req, res) => {
   const filename = req.params.filename;
