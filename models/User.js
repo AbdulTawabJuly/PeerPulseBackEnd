@@ -39,6 +39,7 @@
       type:String,
     },
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     blockedFriends:[{  type: mongoose.Schema.Types.ObjectId, ref: "user"  }],
     interest: {
       type:[String],

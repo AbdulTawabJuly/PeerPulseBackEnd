@@ -39,4 +39,39 @@ const uploadDocument = async (req, res) => {
     }
 };
 
-module.exports = { getDocuments, uploadDocument };
+const getTrendingContributors = async (req, res) => {
+    try {
+        const users = await User.find().select('name _id').populate({ 
+            path: 'followers', 
+            select: '_id' 
+        });
+        users.sort((a, b) => b.followers.length - a.followers.length);
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+const followContributor = async (req, res) => {
+    try {
+        const { userId, followerId } = req.body;
+
+        // Find the user to follow
+        const userToFollow = await User.findById(userId);
+        if (!userToFollow) {
+            return res.status(404).json({ success: false, message: "User to follow not found" });
+        }
+
+        // Update the followers array of the user being followed
+        userToFollow.followers.push(followerId);
+        await userToFollow.save();
+
+        res.status(200).json({ success: true, message: "User followed successfully" });
+    } catch (error) {
+        console.error('Error following contributor:', error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+module.exports = { getDocuments, uploadDocument, getTrendingContributors, followContributor };
