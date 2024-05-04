@@ -16,7 +16,6 @@ const uploadDocument = async (req, res) => {
     try {
         // Extract file details from request
         const { originalname, createdBy } = req.body;
-
         // Find the user who uploaded the document
         const user = await User.findById(createdBy);
         if (!user) {
