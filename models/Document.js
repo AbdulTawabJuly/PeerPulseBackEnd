@@ -7,8 +7,7 @@ const documentSchema = new mongoose.Schema({
         required: true
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user', // Reference to the User model
+        type: String,
         required: true
     },
     uploadDate: {
