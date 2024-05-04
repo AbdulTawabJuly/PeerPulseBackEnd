@@ -87,7 +87,7 @@ const removeMember = async (req, res) => {
         await room.save();
 
         // Return an object containing memberId and a success message
-        return res.status(200).json({ userId: memberId, message: 'Member removed from whiteboard successfully' });
+        return res.status(200).json({ userId: memberId});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
